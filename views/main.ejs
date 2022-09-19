@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.0.0-alpha.1/axios.min.js"></script>
+    <title>Отправка данных на сервер</title>
+</head>
+<body>
+    <form name="bioForm">
+        <p>Имя:</p>
+        <input type="text" name="name">
+        <p>Фамилия:</p>
+        <input type="text" name="surname">
+        <p>Дата рождения:</p>
+        <input type="text" name="birthday">
+        <button type="submit">send</button>
+    </form>
+
+    <script>
+        const formEl = document.forms.bioForm;
+
+        formEl.addEventListener('submit', async (ev) => {
+            ev.preventDefault();
+            const formData = new FormData(ev.target);
+
+            const { data } = await axios.post('/test', formData);
+            console.log( data );
+        })
+    </script>
+</body>
+</html>
