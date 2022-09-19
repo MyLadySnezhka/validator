@@ -1,14 +1,13 @@
 const express = require('express');
 const router = express();
 const upload = require('multer')();
-const Ajv = require('ajv');
+const validMw = require('./valid');
 
 router.get('/', (req, res) => {
     res.render('main');
 });
 
-router.post('/test', upload.none(), async(req, res) => {
-    const schema = {
+router.post('/test', upload.none(), validMw ({
         type: "object",
         properties: {
             name: { type: "string", minLength:3, maxLength:30 },
@@ -17,30 +16,14 @@ router.post('/test', upload.none(), async(req, res) => {
                 type: "string", 
                 minLength:1, 
                 maxLength:10,
-                pattern: '/^([0-3]\d).([0-1]\d).([1-2]\d\d\d)$/'
+                pattern: '/^([0-3]\d).([0-1]\d).([1-2]\d\d\d)$/' //регулярка
             }
         },
         required: ['name', 'surname', 'birthday'], //обязательные поля
         additionalProperties: false,
-      };    
-        const ajv = new Ajv();
-        const validate = ajv.compile(schema);
-        const valid = validate(req.body);
-        //if (!valid) console.log(validate.errors);
-        if (!valid) {
-            const result = { status: 'invalid data', payload: validate.errors};
-            res.json(result);
-            // res.json( 400, {
-            //     status: 'validation error!',
-            //     errors: validate.errors
-            // });
-            return;
-        };
-
-    // console.log('it`s work');
-    res.json({ status: 'ok' });
-});
-
+      }), async (req, res) => {
+        const { name, surname, birthday} = req.body;
+      });   
   
 //   const data = {
 //     name: 'Lara',
